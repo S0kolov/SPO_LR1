@@ -6,15 +6,16 @@ using namespace std;
 
 const int N = 10000;
 
-void CreateProc( char* argv) {
+void CreateProc( int count) {
 	STARTUPINFO StartupInfo;
 	PROCESS_INFORMATION ProcInfo;
-	TCHAR CommandLine[] = TEXT("0");
+	TCHAR CommandLine[] = "Lr1SPO 0";//TEXT((const char[9])str);
+	CommandLine[7] += count;
 	ZeroMemory(&StartupInfo, sizeof(StartupInfo));
 	StartupInfo.cb = sizeof(StartupInfo);
 	ZeroMemory(&ProcInfo, sizeof(ProcInfo));
 
-		if (!CreateProcess("Lr1SPO", // Не используется имя модуля 
+		if (!CreateProcess(NULL, // Не используется имя модуля 
 			CommandLine,          // Командная строка
 			NULL,                 // Дескриптор процесса не наследуется. 
 			NULL,                 // Дескриптор потока не наследуется. 
@@ -26,15 +27,15 @@ void CreateProc( char* argv) {
 			&ProcInfo)           // Указатель на структуру информации о процессе.
 			)
 			cout << "error" << endl;
-		else cout << "vse OK";
+		else cout << "vse OK"<<endl;
+		for (int i = 0; i < 10; i++)
+			cout << "proc : " << _getpid() << endl;
 		WaitForSingleObject(ProcInfo.hProcess, INFINITE);
 }
 
 void StartProc(int count) {
 	count--;
-	char* argv;
-	argv = itoa(count, argv, 10);
-	CreateProc(argv);
+	CreateProc(count);
 }
 
 int main(int argc, char** argv) {
@@ -45,10 +46,12 @@ int main(int argc, char** argv) {
 	else {
 		cin >> count;
 	}
+	if (count > 10) {
+		cout << "Oh Oh, goodby ;)" << endl;
+		return 0;
+	}
 	if (count > 0)
 		StartProc(count);
-	else
-		for (int i = 0; i < 10; i++)
-			cout << "proc : " << _getpid() << endl;
+
 	return 0;
 }
